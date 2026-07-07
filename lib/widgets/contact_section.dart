@@ -16,14 +16,9 @@ class _ContactSectionState extends State<ContactSection> {
   final TextEditingController _messageController = TextEditingController();
 
   String _projectType = "App Development";
-  String _budgetRange = "\$1k - \$5k";
   bool _isLoading = false;
   bool _isSuccess = false;
   String _errorMessage = "";
-
-  // The user can customize this Formspree Form ID
-  // Create a free account at formspree.io and paste the form ID here.
-  final String _formspreeId = "YOUR_FORMSPREE_ID"; 
 
   @override
   void dispose() {
@@ -45,23 +40,12 @@ class _ContactSectionState extends State<ContactSection> {
       "name": _nameController.text,
       "email": _emailController.text,
       "projectType": _projectType,
-      "budget": _budgetRange,
       "message": _messageController.text,
     };
 
     try {
-      // If the developer has not configured their formspree ID, simulate success or send.
-      if (_formspreeId == "YOUR_FORMSPREE_ID" || _formspreeId.trim().isEmpty) {
-        // Simulating network delay for mock submission
-        await Future.delayed(const Duration(seconds: 2));
-        setState(() {
-          _isLoading = false;
-          _isSuccess = true;
-        });
-        return;
-      }
-
-      final url = Uri.parse("https://formspree.io/f/$_formspreeId");
+      // Send message to FormSubmit API (which will forward to verjotheer@gmail.com)
+      final url = Uri.parse("https://formsubmit.co/ajax/verjotheer@gmail.com");
       final response = await http.post(
         url,
         headers: {"Content-Type": "application/json"},
@@ -235,27 +219,7 @@ class _ContactSectionState extends State<ContactSection> {
           ),
           const SizedBox(height: 24),
 
-          // Budget Selector
-          const Text(
-            "Estimated Project Budget",
-            style: TextStyle(
-              fontSize: 14,
-              fontWeight: FontWeight.w600,
-              color: Colors.white,
-            ),
-          ),
-          const SizedBox(height: 12),
-          Wrap(
-            spacing: 10,
-            runSpacing: 10,
-            children: [
-              _buildBudgetChip("Under \$1k"),
-              _buildBudgetChip("\$1k - \$5k"),
-              _buildBudgetChip("\$5k - \$10k"),
-              _buildBudgetChip("\$10k+"),
-            ],
-          ),
-          const SizedBox(height: 24),
+          // Budget Selector removed
 
           // Message Input
           _buildTextField(
@@ -388,33 +352,7 @@ class _ContactSectionState extends State<ContactSection> {
     );
   }
 
-  Widget _buildBudgetChip(String label) {
-    final isSelected = _budgetRange == label;
-    return ChoiceChip(
-      label: Text(label),
-      selected: isSelected,
-      onSelected: (selected) {
-        if (selected) {
-          setState(() {
-            _budgetRange = label;
-          });
-        }
-      },
-      labelStyle: TextStyle(
-        color: isSelected ? Colors.white : const Color(0xFF909BB4),
-        fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
-        fontSize: 13,
-      ),
-      selectedColor: const Color(0xFFBD00FF).withOpacity(0.2),
-      backgroundColor: const Color(0xFF07090E).withOpacity(0.4),
-      side: BorderSide(
-        color: isSelected ? const Color(0xFFBD00FF) : const Color(0xFF202B3E),
-      ),
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(10),
-      ),
-    );
-  }
+  // _buildBudgetChip helper removed
 
   Widget _buildSuccessWidget() {
     return Container(
